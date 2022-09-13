@@ -13,7 +13,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   interest: {
-    type: [Sting],
+    type: [String],
   },
   avatar: {
     type: String,

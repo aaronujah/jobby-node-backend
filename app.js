@@ -15,6 +15,15 @@ app.use("api/v1/users", userRouter);
 app.use("api/v1/jobs", jobRouter);
 app.use("api/v1/companies", companyRouter);
 
-app.listen(port, () => {
-  console.log(`Server is listening on port ${port}...`);
-});
+const start = async () => {
+  try {
+    await connectDB(process.env.MONGO_URI);
+    app.listen(port, () =>
+      console.log(`Server is listening on port ${port}...`)
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+start();

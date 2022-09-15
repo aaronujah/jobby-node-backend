@@ -15,9 +15,9 @@ const companyRouter = require("./routes/company");
 app.use(express.json());
 
 // routes
-app.use("api/v1/users", userRouter);
-app.use("api/v1/jobs", jobRouter);
-app.use("api/v1/companies", companyRouter);
+app.use("/api/v1/users", userRouter);
+app.use("/api/v1/jobs", jobRouter);
+app.use("/api/v1/companies", companyRouter);
 
 const start = async () => {
   try {

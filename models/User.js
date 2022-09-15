@@ -40,6 +40,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "avatar.png",
   },
+  passwordChnagedAt: Date,
 });
 
 UserSchema.pre("save", async function (next) {
@@ -55,6 +56,16 @@ UserSchema.methods.correctPassword = function (
   userPassword
 ) {
   return bcrypt.compare(candidatePassword, userPassword);
+};
+
+UserSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+  if (this.passwordChnagedAt) {
+    changedTimestamp = parseInt(this.passwordChnagedAt.getTime() / 1000, 10);
+
+    return JWTTimestamp < changedTimestamp;
+  }
+
+  return false;
 };
 
 module.exports = mongoose.model("User", UserSchema);

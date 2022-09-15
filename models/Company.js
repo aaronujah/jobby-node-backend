@@ -9,7 +9,7 @@ const CompanySchema = new mongoose.Schema(
     },
     careerPage: {
       type: String,
-      required: [true, "Enter the link to the career page of the compant"],
+      required: [true, "Enter the link to the career page of the company"],
     },
   },
   { timestamps: true }

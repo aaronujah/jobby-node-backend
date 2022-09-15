@@ -1,17 +1,25 @@
 const Company = require("../models/Company");
 
-exports.getAllCompanies = (req, res, next) => {
-  console.log("In the controller");
+exports.getAllCompanies = async (req, res, next) => {
+  companies = await Company.find();
+
   res.status(200).json({
     status: "Success",
+    data: companies,
   });
 };
 
-exports.createCompany = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
+exports.createCompany = async (req, res, next) => {
+  try {
+    const company = await Company.create(req.body);
+
+    res.status(200).json({
+      status: "Success",
+      data: company,
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 exports.getCompany = (req, res, next) => {

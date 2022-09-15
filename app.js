@@ -12,6 +12,8 @@ const userRouter = require("./routes/users");
 const jobRouter = require("./routes/jobs");
 const companyRouter = require("./routes/company");
 
+app.use(express.json());
+
 // routes
 app.use("api/v1/users", userRouter);
 app.use("api/v1/jobs", jobRouter);

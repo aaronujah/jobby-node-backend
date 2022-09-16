@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
@@ -30,6 +31,11 @@ const UserSchema = new mongoose.Schema({
       message: "Passwords do not match",
     },
   },
+  role: {
+    type: String,
+    enum: ["user", "bot", "admin"],
+    default: "user",
+  },
   bio: {
     type: String,
   },
@@ -41,6 +47,8 @@ const UserSchema = new mongoose.Schema({
     default: "avatar.png",
   },
   passwordChnagedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 UserSchema.pre("save", async function (next) {
@@ -48,6 +56,13 @@ UserSchema.pre("save", async function (next) {
 
   this.password = await bcrypt.hash(this.password, 12);
   this.passwordConfirm = undefined;
+  next();
+});
+
+UserSchema.pre("save", function (next) {
+  if (!this.isModified("password") || this.isNew) return next();
+
+  this.passwordChnagedAt = Date.now() - 1000;
   next();
 });
 
@@ -66,6 +81,19 @@ UserSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
   }
 
   return false;
+};
+
+UserSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.passwordResetToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 module.exports = mongoose.model("User", UserSchema);

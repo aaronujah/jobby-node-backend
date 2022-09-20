@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const JobSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, "Enter the name of the Job entry"],
+    required: [true, "Every Job must have a name"],
   },
   user: {
     type: mongoose.Types.ObjectId,
@@ -12,16 +12,16 @@ const JobSchema = new mongoose.Schema({
   },
   jobPage: {
     type: String,
-    required: [true, "Enter the link to the Job's page"],
+    required: [true, "Every job must have a link"],
   },
   industry: {
     type: String,
-    required: [true, "Enter the industry this Job belongs to"],
+    required: [true, "Every job must belong to an industry"],
   },
   company: {
     type: mongoose.Types.ObjectId,
     ref: "Company",
-    required: [true, "Enter the Company that listed this Job"],
+    required: [true, "Every Job must belong to a company"],
   },
   description: {
     type: String,
@@ -31,7 +31,12 @@ const JobSchema = new mongoose.Schema({
     required: [true, "Every Job must have a detail to be valid"],
   },
   location: {
-    type: String,
+    type: {
+      type: String,
+      default: "Point",
+      enum: ["Point"],
+    },
+    coordinates: [Number],
   },
   saved: {
     type: Boolean,

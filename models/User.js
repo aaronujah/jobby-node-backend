@@ -36,6 +36,12 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "bot", "admin"],
     default: "user",
   },
+  companies: [
+    {
+      type: mongoose.Types.ObjectId,
+      ref: "Company",
+    },
+  ],
   bio: {
     type: String,
   },

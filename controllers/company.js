@@ -1,40 +1,59 @@
 const Company = require("../models/Company");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
+const Job = require("../models/Job");
 
-exports.getAllCompanies = async (req, res, next) => {
+exports.getAllCompanies = catchAsync(async (req, res, next) => {
   companies = await Company.find();
 
   res.status(200).json({
     status: "Success",
-    data: companies,
+    data: {
+      companies,
+    },
   });
-};
+});
 
-exports.createCompany = async (req, res, next) => {
-  try {
-    const company = await Company.create(req.body);
+exports.createCompany = catchAsync(async (req, res, next) => {
+  const company = await Company.create(req.body);
 
-    res.status(200).json({
-      status: "Success",
-      data: company,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-exports.getCompany = (req, res, next) => {
-  console.log("In the controller");
   res.status(200).json({
     status: "Success",
+    data: {
+      company,
+    },
   });
-};
+});
 
-exports.updateCompany = (req, res, next) => {
-  console.log("In the controller");
+exports.getCompany = catchAsync(async (req, res, next) => {
+  const {
+    user: { userId },
+    params: { id: companyId },
+  } = req;
+
+  jobs = await Job.find({ createdFor: userId, company: companyId });
+  company = await Company.findOne({ companyId });
+
+  company.jobs = jobs;
+
   res.status(200).json({
     status: "Success",
+    data: {
+      company,
+    },
   });
-};
+});
+
+exports.updateCompany = catchAsync(async (req, res, next) => {
+  company = await Company.findByIdAndUpdate(req.params.id, req.body);
+
+  res.status(200).json({
+    status: "Success",
+    data: {
+      company,
+    },
+  });
+});
 
 exports.deleteCompany = (req, res, next) => {
   console.log("In the controller");

@@ -4,10 +4,8 @@ router = express.Router();
 const authController = require("../controllers/auth");
 const jobsController = require("../controllers/jobs");
 
-router
-  .route("/")
-  .get(authController.protect, jobsController.getAllJobs)
-  .post(authController.protect, jobsController.createJob);
+router.route("/").get(authController.protect, jobsController.getAllJobs);
+// .post(authController.protect, jobsController.createJob);
 
 router
   .route("/:id")

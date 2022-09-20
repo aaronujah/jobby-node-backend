@@ -12,6 +12,11 @@ const CompanySchema = new mongoose.Schema(
       required: [true, "Enter the link to the career page of the company"],
       unique: true,
     },
+    verified: {
+      type: Boolean,
+      default: false,
+      select: false,
+    },
   },
   { timestamps: true }
 );

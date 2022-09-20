@@ -5,7 +5,7 @@ const JobSchema = new mongoose.Schema({
     type: String,
     required: [true, "Every Job must have a name"],
   },
-  user: {
+  createdFor: {
     type: mongoose.Types.ObjectId,
     ref: "User",
     required: true,
@@ -45,6 +45,11 @@ const JobSchema = new mongoose.Schema({
   deleted: {
     type: Boolean,
     default: false,
+    select: false,
+  },
+  deletedAt: {
+    type: Date,
+    select: false,
   },
 });
 

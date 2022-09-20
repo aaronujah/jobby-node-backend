@@ -1,36 +1,79 @@
 const Job = require("../models/Job");
+const catchAsync = require("../utils/catchAsync");
+const AppError = require("../utils/appError");
+const scrapper = require("../utils/jobScrapper");
 
-exports.getAllJobs = (req, res, next) => {
-  console.log("In the controller");
+exports.getAllJobs = catchAsync(async (req, res, next) => {
+  const jobs = await Job.find(req.user.id);
+
+  if (!jobs) {
+    return next(new AppError("You have no Job"));
+  }
+
   res.status(200).json({
     status: "Success",
+    data: {
+      jobs,
+    },
   });
-};
+});
 
-exports.createJob = (req, res, next) => {
-  console.log("In the controller");
+// exports.updateAllJobs = catchAsync(async (req, res, next) => {
+//   res.status(200).json({
+//     status: "Success",
+//     data: {
+//       updatedJob,
+//     },
+//   });
+// });
+
+exports.getJob = catchAsync(async (req, res, next) => {
+  const {
+    user: { userId },
+    params: { id: jobId },
+  } = req;
+
+  const job = await Job.findOne({ _id: jobId, createdFor: userId });
+
+  if (job.user !== userId) {
+    return next(new AppError("You're not allowed to view this Job"));
+  }
+
   res.status(200).json({
     status: "Success",
+    data: {
+      job,
+    },
   });
-};
+});
 
-exports.getJob = (req, res, next) => {
-  console.log("In the controller");
+exports.updateJob = catchAsync(async (req, res, next) => {
+  const {
+    user: { userId },
+    params: { id: jobId },
+  } = req;
+
+  const job = await Job.findOne({ _id: jobId, createdFor: userId });
+
+  const updates = await scrapper.updateJob(job.jobPage);
+  const updatedJob = await Job.findByIdAndUpdate(jobId, updates);
+
   res.status(200).json({
     status: "Success",
+    data: {
+      updatedJob,
+    },
   });
-};
+});
 
-exports.updateJob = (req, res, next) => {
-  console.log("In the controller");
+exports.deleteJob = catchAsync(async (req, res, next) => {
+  await Job.findByIdAndUpdate(req.user.id, {
+    deleted: true,
+    deletedAt: Date.now(),
+  });
+
   res.status(200).json({
     status: "Success",
+    data: null,
   });
-};
-
-exports.deleteJob = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
-};
+});

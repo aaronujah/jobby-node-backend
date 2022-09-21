@@ -4,7 +4,7 @@ const CompanySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Please enter a the company name"],
+      required: [true, "Please enter the company name"],
       unique: true,
     },
     careerPage: {

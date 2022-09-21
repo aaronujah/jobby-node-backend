@@ -5,9 +5,11 @@ const Job = require("../models/Job");
 
 exports.getAllCompanies = catchAsync(async (req, res, next) => {
   companies = await Company.find();
+  count = companies.length;
 
   res.status(200).json({
     status: "Success",
+    count,
     data: {
       companies,
     },
@@ -26,15 +28,7 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 });
 
 exports.getCompany = catchAsync(async (req, res, next) => {
-  const {
-    user: { userId },
-    params: { id: companyId },
-  } = req;
-
-  jobs = await Job.find({ createdFor: userId, company: companyId });
-  company = await Company.findOne({ companyId });
-
-  company.jobs = jobs;
+  company = await Company.findOne(req.params.id);
 
   res.status(200).json({
     status: "Success",
@@ -55,9 +49,10 @@ exports.updateCompany = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteCompany = (req, res, next) => {
-  console.log("In the controller");
+exports.deleteCompany = catchAsync(async (req, res, next) => {
+  await Company.findByIdAndRemove(req.params.id);
+
   res.status(200).json({
     status: "Success",
   });
-};
+});

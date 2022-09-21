@@ -10,10 +10,10 @@ router
 
 router
   .route("/:id")
-  .get(authcontroller.protect, companyController.getCompany)
-  .patch(authcontroller.protect, companyController.updateCompany)
+  .get(authController.protect, companyController.getCompany)
+  .patch(authController.protect, companyController.updateCompany)
   .delete(
-    authcontroller.protect,
+    authController.protect,
     authController.restrictTo("admin", "bot"),
     companyController.deleteCompany
   );

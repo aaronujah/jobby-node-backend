@@ -35,6 +35,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "bot", "admin"],
     default: "user",
+    select: false,
   },
   companies: [
     {

@@ -4,7 +4,8 @@ const AppError = require("../utils/appError");
 const scrapper = require("../utils/jobScrapper");
 
 exports.getAllJobs = catchAsync(async (req, res, next) => {
-  const jobs = await Job.find(req.user.id);
+  const jobs = await Job.find({ createdFor: req.user.id });
+  count = jobs.length;
 
   if (!jobs) {
     return next(new AppError("You have no Job"));
@@ -12,8 +13,20 @@ exports.getAllJobs = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "Success",
+    count,
     data: {
       jobs,
+    },
+  });
+});
+
+exports.createJob = catchAsync(async (req, res, next) => {
+  const job = await Job.create(req.body);
+
+  res.status(201).json({
+    status: "Success",
+    data: {
+      job,
     },
   });
 });
@@ -29,14 +42,14 @@ exports.getAllJobs = catchAsync(async (req, res, next) => {
 
 exports.getJob = catchAsync(async (req, res, next) => {
   const {
-    user: { userId },
+    user: { id: userId },
     params: { id: jobId },
   } = req;
 
   const job = await Job.findOne({ _id: jobId, createdFor: userId });
 
-  if (job.user !== userId) {
-    return next(new AppError("You're not allowed to view this Job"));
+  if (!job) {
+    return next(new AppError(`You do not have a Job with the id: ${jobId}`));
   }
 
   res.status(200).json({
@@ -49,7 +62,7 @@ exports.getJob = catchAsync(async (req, res, next) => {
 
 exports.updateJob = catchAsync(async (req, res, next) => {
   const {
-    user: { userId },
+    user: { id: userId },
     params: { id: jobId },
   } = req;
 

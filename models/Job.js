@@ -19,7 +19,7 @@ const JobSchema = new mongoose.Schema({
     required: [true, "Every job must belong to an industry"],
   },
   company: {
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.ObjectId,
     ref: "Company",
     required: [true, "Every Job must belong to a company"],
   },

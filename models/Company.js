@@ -21,7 +21,7 @@ const CompanySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-CompanySchema.virtual("", {
+CompanySchema.virtual("jobs", {
   ref: "Job",
   foreignField: "company",
   localField: "_id",

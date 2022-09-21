@@ -28,7 +28,7 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 });
 
 exports.getCompany = catchAsync(async (req, res, next) => {
-  company = await Company.findOne(req.params.id);
+  const company = await Company.findById(req.params.id).populate("jobs");
 
   res.status(200).json({
     status: "Success",

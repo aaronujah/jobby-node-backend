@@ -8,11 +8,10 @@ exports.getAllCompanies = catchAsync(async (req, res, next) => {
     path: "jobs",
     select: "-createdFor, -company",
   });
-  count = companies.length;
 
   res.status(200).json({
     status: "Success",
-    count,
+    count: companies.length,
     data: {
       companies,
     },

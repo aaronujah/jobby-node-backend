@@ -4,8 +4,11 @@ const AppError = require("../utils/appError");
 const scrapper = require("../utils/jobScrapper");
 
 exports.getAllJobs = catchAsync(async (req, res, next) => {
-  const jobs = await Job.find({ createdFor: req.user.id });
-  count = jobs.length;
+  let filter = {};
+  if (req.params.companyId) filter = { company: req.params.companyId };
+
+  filter.createdFor = req.user.id;
+  const jobs = await Job.find(filter);
 
   if (!jobs) {
     return next(new AppError("You have no Job"));
@@ -13,7 +16,7 @@ exports.getAllJobs = catchAsync(async (req, res, next) => {
 
   res.status(200).json({
     status: "Success",
-    count,
+    count: jobs.length,
     data: {
       jobs,
     },

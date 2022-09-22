@@ -1,7 +1,10 @@
 const express = require("express");
-router = express.Router();
-companyController = require("../controllers/company");
-authController = require("../controllers/auth");
+const router = express.Router();
+const companyController = require("../controllers/company");
+const authController = require("../controllers/auth");
+const jobRouter = require("../routes/jobs");
+
+router.use("/:companyId/jobs", jobRouter);
 
 router
   .route("/")

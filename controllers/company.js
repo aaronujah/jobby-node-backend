@@ -4,7 +4,10 @@ const AppError = require("../utils/appError");
 const Job = require("../models/Job");
 
 exports.getAllCompanies = catchAsync(async (req, res, next) => {
-  companies = await Company.find();
+  companies = await Company.find().populate({
+    path: "jobs",
+    select: "-createdFor, -company",
+  });
   count = companies.length;
 
   res.status(200).json({
@@ -28,7 +31,11 @@ exports.createCompany = catchAsync(async (req, res, next) => {
 });
 
 exports.getCompany = catchAsync(async (req, res, next) => {
-  const company = await Company.findById(req.params.id).populate("jobs");
+  const company = await Company.findById(req.params.id).populate({
+    path: "jobs",
+    select: "-createdFor, -company",
+  });
+  console.log(company);
 
   res.status(200).json({
     status: "Success",

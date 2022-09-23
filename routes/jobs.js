@@ -3,16 +3,23 @@ router = express.Router({ mergeParams: true });
 
 const authController = require("../controllers/auth");
 const jobsController = require("../controllers/jobs");
+// const router = require("./company");
+// const companyRouter = require("./company");
 
-router
-  .route("/")
-  .get(authController.protect, jobsController.getAllJobs)
-  .post(authController.protect, jobsController.createJob);
+router.use(authController.protect);
+
+router.route("/").get(jobsController.getAllJobs).post(jobsController.createJob);
 
 router
   .route("/:id")
-  .get(authController.protect, jobsController.getJob)
-  .patch(authController.protect, jobsController.updateJob)
+  .get(jobsController.getJob)
+  .patch(jobsController.updateUserJob, jobsController.updateJob)
+  .delete(jobsController.deleteUserJob);
+
+router.use(authController.restrictTo("admin", "bot"));
+router
+  .route("/admin/:id")
+  .patch(jobsController.updateJob)
   .delete(authController.protect, jobsController.deleteJob);
 
 module.exports = router;

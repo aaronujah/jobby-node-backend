@@ -35,7 +35,6 @@ const UserSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "bot", "admin"],
     default: "user",
-    select: false,
   },
   companies: [
     {
@@ -49,9 +48,13 @@ const UserSchema = new mongoose.Schema({
   interest: {
     type: [String],
   },
-  active: {
+  deleted: {
     type: Boolean,
-    default: true,
+    default: false,
+    select: false,
+  },
+  deletedAt: {
+    type: Date,
     select: false,
   },
   avatar: {

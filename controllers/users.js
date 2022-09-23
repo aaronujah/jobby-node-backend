@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const AppError = require("../utils/appError");
 const catchAsync = require("../utils/catchAsync");
+const factory = require("./handlerFactory");
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
@@ -8,34 +9,6 @@ const filterObj = (obj, ...allowedFields) => {
     if (allowedFields.includes(el)) newObj[el] = obj[el];
   });
   return newObj;
-};
-
-exports.getAllUsers = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
-};
-
-exports.createUser = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
-};
-
-exports.getUser = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
-};
-
-exports.updateUser = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -70,18 +43,12 @@ exports.updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteMe = catchAsync(async (req, res, next) => {
-  await User.findByIdAndUpdate(req.user.id, { active: false });
-
-  res.status(204).json({
-    status: "success",
-    data: null,
-  });
-});
-
-exports.deleteUser = (req, res, next) => {
-  console.log("In the controller");
-  res.status(200).json({
-    status: "Success",
-  });
+exports.getAllUsers = factory.getAll(User);
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
 };
+exports.getUser = factory.getOne(User);
+exports.deleteMe = factory.deleteByUser(User);
+exports.updateUser = factory.updateOne(User);
+exports.deleteUser = factory.deleteOne(User);

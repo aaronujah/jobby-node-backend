@@ -4,19 +4,19 @@ const companyController = require("../controllers/company");
 const authController = require("../controllers/auth");
 const jobRouter = require("../routes/jobs");
 
+router.use(authController.protect);
 router.use("/:companyId/jobs", jobRouter);
 
 router
   .route("/")
-  .get(authController.protect, companyController.getAllCompanies)
-  .post(authController.protect, companyController.createCompany);
+  .get(companyController.getAllCompanies)
+  .post(companyController.createCompany);
 
 router
   .route("/:id")
-  .get(authController.protect, companyController.getCompany)
-  .patch(authController.protect, companyController.updateCompany)
+  .get(companyController.getCompany)
+  .patch(companyController.updateCompany)
   .delete(
-    authController.protect,
     authController.restrictTo("admin", "bot"),
     companyController.deleteCompany
   );

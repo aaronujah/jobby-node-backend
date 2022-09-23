@@ -15,18 +15,18 @@ router.patch(
   authController.updatePassword
 );
 
-router.patch("/updateMe", authController.protect, userController.updateMe);
-router.delete("/deleteMe", authController.protect, userController.deleteMe);
+router.use(authController.protect);
 
-router
-  .route("/")
-  .post(userController.createUser)
-  .get(userController.getAllUsers);
+router.get("/me", userController.getMe, userController.getUser);
+router.patch("/updateMe", userController.updateMe);
+router.delete("/deleteMe", userController.deleteMe);
+
+router.route("/").get(userController.getAllUsers);
 
 router
   .route("/:id")
   .get(userController.getUser)
-  .delete(userController.deleteUser)
-  .patch(userController.updateUser);
+  .patch(authController.restrictTo("admin", "bot"), userController.updateUser)
+  .delete(authController.restrictTo("admin", "bot"), userController.deleteUser);
 
 module.exports = router;
